@@ -1,3 +1,6 @@
+package com.data;
+
+
 public class Assertions {
 
     public static String AssertName() {
