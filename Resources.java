@@ -18,10 +18,26 @@ public class Resources {
     }
 
     public static String GetUserMainRes(){
-        String getusermainres="/profiles/";
+        String getusermainres="/users/me/profiles/main";
         return getusermainres;
 
     }
 
+    public static String GetUserMeRes(){
+        String getusermeres="/users/me";
+        return getusermeres;
 
+    }
+
+    public static String PutProfileRes(){
+        String putprofileres="/profiles/";
+        return putprofileres;
+
+    }
+
+    public static String PutUsersMeRes(){
+        String putusersmeres="/profiles/";
+        return putusersmeres;
+
+    }
 }

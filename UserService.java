@@ -26,7 +26,12 @@ public class UserService {
         prop.load(fis);
         //prop.getproperty("HOST");
 
+        //private void getprofileid()
+        //{
+          //  this.profileid = Auth.profileid;
+        //}
     }
+
 
     @Test
     public void Auth() {
@@ -37,12 +42,23 @@ public class UserService {
                 //header("Accept-Encoding","identity").
                         header("Authorization",prop.getProperty("Authorization_Header")).
                         header("Content-Type",prop.getProperty("Content")).
+                        header("User-Agent",prop.getProperty("User-Agent")).
                         when();
         Response response = request.post(Resources.AuthRes());
         response.then().assertThat().statusCode(200).
                 and().header("Content-Type","application/json;charset=UTF-8").
                 and().body("email",equalTo(Assertions.AssertMail())).
                 and().body("name",equalTo(Assertions.AssertName()));
+        // Extract profile id from response
+        String responseString = response.asString();
+        System.out.println(responseString);
+        JsonPath js = new JsonPath(responseString);
+        profileid = js.get("profile_id");
+        System.out.println("ProfileID = " + profileid);
+
+        // Extract sessiontoken from response
+        token = js.get("token");
+        System.out.println("Token = " + token);
     }
 
     @Test
@@ -54,6 +70,7 @@ public class UserService {
                 //header("Accept-Encoding","identity").
                         header("Authorization",prop.getProperty("Authorization_Header")).
                         header("Content-Type",prop.getProperty("Content")).
+                        header("User-Agent",prop.getProperty("User-Agent")).
                         when();
         Response response = request.get(Resources.AuthCheckRes());
         response.then().assertThat().statusCode(200).
@@ -75,15 +92,16 @@ public class UserService {
 
     }
 
-   @Test
+    @Test
     public void GetProfile() {
         RestAssured.baseURI = prop.getProperty("HOST");
         RequestSpecification request = RestAssured.
                 given().
                 //param("parameter","auth/authenticate")
                 //header("Accept-Encoding","identity").
-                header("X-Ymd-Session-Token", token).
+                header("Authorization",prop.getProperty("Authorization_Header")).
                 header("Content-Type", prop.getProperty("Content")).
+                header("User-Agent",prop.getProperty("User-Agent")).
                 when();
         Response responseone = request.get(Resources.GetProfileRes() + profileid);
         responseone.then().assertThat().statusCode(200).
@@ -94,6 +112,7 @@ public class UserService {
                 and().extract().response();
         String responseStringval = responseone.asString();
         System.out.println(responseStringval);
+        System.out.println("ProfileID = " + profileid);
 
     }
 
@@ -104,8 +123,9 @@ public class UserService {
                 given().
                 //param("parameter","auth/authenticate")
                 //header("Accept-Encoding","identity").
-                        header("X-Ymd-Session-Token", token).
+                        header("Authorization",prop.getProperty("Authorization_Header")).
                         header("Content-Type", prop.getProperty("Content")).
+                        header("User-Agent",prop.getProperty("User-Agent")).
                         when();
         Response responsetwo = request.get(Resources.GetUserMainRes());
         responsetwo.then().assertThat().statusCode(200).
@@ -114,26 +134,29 @@ public class UserService {
                 and().extract().response();
         String responseStringvalue = responsetwo.asString();
         System.out.println(responseStringvalue);
+       System.out.println("ProfileID = " + profileid);
 
     }
 
-   @Test
+    @Test
     public void GetUsersMe() {
         RestAssured.baseURI = prop.getProperty("HOST");
         RequestSpecification request = RestAssured.
                 given().
                 //param("parameter","auth/authenticate")
                 //header("Accept-Encoding","identity").
-                        header("X-Ymd-Session-Token", token).
+                        header("Authorization",prop.getProperty("Authorization_Header")).
                         header("Content-Type", prop.getProperty("Content")).
+                        header("User-Agent",prop.getProperty("User-Agent")).
                         when();
-        Response responsetwo = request.get("/users/me");
+        Response responsetwo = request.get(Resources.GetUserMeRes());
         responsetwo.then().assertThat().statusCode(200).
                 and().header("Content-Type",equalTo(Assertions.AssertContentType())).
                 and().body("main_profile.id", comparesEqualTo(profileid)).
                 and().extract().response();
         String responseStringvalue = responsetwo.asString();
         System.out.println(responseStringvalue);
+        System.out.println("ProfileID = " + profileid);
 
     }
 
@@ -144,14 +167,15 @@ public class UserService {
                 given().
                 //param("parameter","auth/authenticate")
                 //header("Accept-Encoding","identity").
-                        header("X-Ymd-Session-Token", token).
+                        header("Authorization",prop.getProperty("Authorization_Header")).
                         header("Content-Type", prop.getProperty("Content")).
+                        header("User-Agent",prop.getProperty("User-Agent")).
                         body("{"+
                                 "\"gender\":\"female\","+
                                 "\"yob\":1975"+
                         "}").
                         when();
-        Response responsetwo = request.put("/profiles/"+profileid);
+        Response responsetwo = request.put(Resources.PutProfileRes()+profileid);
         responsetwo.then().assertThat().statusCode(200).
                 and().header("Content-Type",equalTo(Assertions.AssertContentType())).
                 and().body("id", comparesEqualTo(profileid)).
@@ -160,24 +184,27 @@ public class UserService {
                 and().extract().response();
         String responseStringvalue = responsetwo.asString();
         System.out.println(responseStringvalue);
+        System.out.println("ProfileID = " + profileid);
 
     }
 
-    @Test
+    /*@Test
     public void PutUsersMe() {
         RestAssured.baseURI = prop.getProperty("HOST");
         RequestSpecification request = RestAssured.
                 given().
                 //param("parameter","auth/authenticate")
                 //header("Accept-Encoding","identity").
-                        header("X-Ymd-Session-Token", token).
+                        header("Authorization",prop.getProperty("Authorization_Header")).
                         header("Content-Type", prop.getProperty("Content")).
+                        header("User-Agent",prop.getProperty("User-Agent")).
                         body("{"+
-                                "\"gender\":\"female\","+
-                                "\"yob\":1975"+
+                                "\"year_of_birth\":1997,"+
+                                "\"gender\":male"+
                                 "}").
                         when();
-        Response responsetwo = request.put("/profiles/"+profileid);
+        Response responsetwo = request.put(Resources.PutUsersMeRes());
+        System.out.println(responsetwo);
         responsetwo.then().assertThat().statusCode(200).
                 and().header("Content-Type",equalTo(Assertions.AssertContentType())).
                 and().body("id", comparesEqualTo(profileid)).
@@ -187,5 +214,5 @@ public class UserService {
         String responseStringvalue = responsetwo.asString();
         System.out.println(responseStringvalue);
 
-    }
+    } */
 }
