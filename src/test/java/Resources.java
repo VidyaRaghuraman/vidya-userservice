@@ -1,6 +1,3 @@
-package com.data;
-
-
 public class Resources {
     public static String AuthRes(){
         String authres="/auth/authenticate";
