@@ -44,11 +44,11 @@ public class UserService {
                         header("Content-Type",prop.getProperty("Content")).
                         header("User-Agent",prop.getProperty("User-Agent")).
                         when();
-        Response response = request.post(Resources.AuthRes());
+        Response response = request.post(Resources.geturlauthres());
         response.then().assertThat().statusCode(200).
                 and().header("Content-Type","application/json;charset=UTF-8").
-                and().body("email",equalTo(Assertions.AssertMail())).
-                and().body("name",equalTo(Assertions.AssertName()));
+                and().body("email",equalTo(Assertions.assertrespemail())).
+                and().body("name",equalTo(Assertions.assertrespname()));
         // Extract profile id from response
         String responseString = response.asString();
         System.out.println(responseString);
@@ -72,11 +72,11 @@ public class UserService {
                         header("Content-Type",prop.getProperty("Content")).
                         header("User-Agent",prop.getProperty("User-Agent")).
                         when();
-        Response response = request.get(Resources.AuthCheckRes());
+        Response response = request.get(Resources.geturlauthcheckres());
         response.then().assertThat().statusCode(200).
-                and().header("Content-Type",equalTo(Assertions.AssertContentType())).
-                and().body("email",equalTo(Assertions.AssertMail())).
-                and().body("name",equalTo(Assertions.AssertName())).
+                and().header("Content-Type",equalTo(Assertions.assertrespcontenttype())).
+                and().body("email",equalTo(Assertions.assertrespemail())).
+                and().body("name",equalTo(Assertions.assertrespname())).
                 and().extract().response();
 
         // Extract profile id from response
@@ -103,11 +103,11 @@ public class UserService {
                 header("Content-Type", prop.getProperty("Content")).
                 header("User-Agent",prop.getProperty("User-Agent")).
                 when();
-        Response responseone = request.get(Resources.GetProfileRes() + profileid);
+        Response responseone = request.get(Resources.geturlgetprofileres()+ profileid);
         responseone.then().assertThat().statusCode(200).
-                and().header("Content-Type",equalTo(Assertions.AssertContentType())).
-                and().body("email",equalTo(Assertions.AssertMail())).
-                and().body("name",equalTo(Assertions.AssertName())).
+                and().header("Content-Type",equalTo(Assertions.assertrespcontenttype())).
+                and().body("email",equalTo(Assertions.assertrespemail())).
+                and().body("name",equalTo(Assertions.assertrespname())).
                 and().body("id", comparesEqualTo(profileid)).
                 and().extract().response();
         String responseStringval = responseone.asString();
@@ -127,9 +127,9 @@ public class UserService {
                         header("Content-Type", prop.getProperty("Content")).
                         header("User-Agent",prop.getProperty("User-Agent")).
                         when();
-        Response responsetwo = request.get(Resources.GetUserMainRes());
+        Response responsetwo = request.get(Resources.geturlgetusermanres());
         responsetwo.then().assertThat().statusCode(200).
-                and().header("Content-Type",equalTo(Assertions.AssertContentType())).
+                and().header("Content-Type",equalTo(Assertions.assertrespcontenttype())).
                 and().body("profile_uuid", comparesEqualTo(profileid)).
                 and().extract().response();
         String responseStringvalue = responsetwo.asString();
@@ -149,9 +149,9 @@ public class UserService {
                         header("Content-Type", prop.getProperty("Content")).
                         header("User-Agent",prop.getProperty("User-Agent")).
                         when();
-        Response responsetwo = request.get(Resources.GetUserMeRes());
+        Response responsetwo = request.get(Resources.geturlgetusermeres());
         responsetwo.then().assertThat().statusCode(200).
-                and().header("Content-Type",equalTo(Assertions.AssertContentType())).
+                and().header("Content-Type",equalTo(Assertions.assertrespcontenttype())).
                 and().body("main_profile.id", comparesEqualTo(profileid)).
                 and().extract().response();
         String responseStringvalue = responsetwo.asString();
@@ -175,9 +175,9 @@ public class UserService {
                                 "\"yob\":1975"+
                         "}").
                         when();
-        Response responsetwo = request.put(Resources.PutProfileRes()+profileid);
+        Response responsetwo = request.put(Resources.geturlputprofileres()+profileid);
         responsetwo.then().assertThat().statusCode(200).
-                and().header("Content-Type",equalTo(Assertions.AssertContentType())).
+                and().header("Content-Type",equalTo(Assertions.assertrespcontenttype())).
                 and().body("id", comparesEqualTo(profileid)).
                 and().body("gender",equalTo("female")).
                 and().body("year_of_birth",equalTo(1975)).
@@ -203,10 +203,10 @@ public class UserService {
                                 "\"gender\":male"+
                                 "}").
                         when();
-        Response responsetwo = request.put(Resources.PutUsersMeRes());
+        Response responsetwo = request.put(Resources.geturlputusersmeres());
         System.out.println(responsetwo);
         responsetwo.then().assertThat().statusCode(200).
-                and().header("Content-Type",equalTo(Assertions.AssertContentType())).
+                and().header("Content-Type",equalTo(Assertions.assertrespcontenttype())).
                 and().body("id", comparesEqualTo(profileid)).
                 and().body("gender",equalTo("female")).
                 and().body("year_of_birth",equalTo(1975)).

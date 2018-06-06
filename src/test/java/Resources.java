@@ -1,43 +1,36 @@
 public class Resources {
-    public static String AuthRes(){
-        String authres="/auth/authenticate";
-        return authres;
+    public static String geturlauthres(){
+        return "/auth/authenticate";
 
     }
 
-    public static String AuthCheckRes(){
-        String authcheckres="/auth/check";
-        return authcheckres;
+    public static String geturlauthcheckres(){
+        return "/auth/check";
 
     }
 
-    public static String GetProfileRes(){
-        String getprofileres="/profiles/";
-        return getprofileres;
+    public static String geturlgetprofileres(){
+        return "/profiles/";
 
     }
 
-    public static String GetUserMainRes(){
-        String getusermainres="/users/me/profiles/main";
-        return getusermainres;
+    public static String geturlgetusermanres(){
+        return "/users/me/profiles/main";
 
     }
 
-    public static String GetUserMeRes(){
-        String getusermeres="/users/me";
-        return getusermeres;
+    public static String geturlgetusermeres(){
+        return "/users/me";
 
     }
 
-    public static String PutProfileRes(){
-        String putprofileres="/profiles/";
-        return putprofileres;
+    public static String geturlputprofileres(){
+        return "/profiles/";
 
     }
 
-    public static String PutUsersMeRes(){
-        String putusersmeres="/profiles/";
-        return putusersmeres;
+    public static String geturlputusersmeres(){
+        return "/profiles/";
 
     }
 }

@@ -1,19 +1,16 @@
 public class Assertions {
 
-    public static String AssertName() {
-        String assertname = "FB User qa-test-997";
-        return assertname;
+    public static String assertrespname() {
+        return "FB User qa-test-997";
     }
 
-    public static String AssertMail() {
-        String assertmail = "qa-test-997@your.md";
-        return assertmail;
+    public static String assertrespemail() {
+        return "qa-test-997@your.md";
     }
 
 
-    public static String AssertContentType() {
-        String assertcontenttype = "qa-test-997@your.md";
-        return assertcontenttype="application/json;charset=UTF-8";
+    public static String assertrespcontenttype() {
+        return "application/json;charset=UTF-8";
     }
 
 }
