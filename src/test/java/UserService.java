@@ -22,7 +22,7 @@ public class UserService {
     @BeforeTest
             public void getData() throws IOException {
 
-        FileInputStream fis = new FileInputStream("/Users/vidyaraghuraman/Desktop/GIT/UserHealthprofileService/src/env.properties");
+        FileInputStream fis = new FileInputStream("src/env.properties");
         prop.load(fis);
         //prop.getproperty("HOST");
 
