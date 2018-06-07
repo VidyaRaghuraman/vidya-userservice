@@ -17,25 +17,46 @@ public class UserService {
     Properties prop = new Properties();
     String token;
     String profileid;
+    Response response;
 
 
     @BeforeTest
-            public void getData() throws IOException {
+    public void getData() throws IOException {
 
         FileInputStream fis = new FileInputStream("src/env.properties");
         prop.load(fis);
-        //prop.getproperty("HOST");
+        response = getResponse();
+        profileid= getProfileid(response);
+    }
 
-        //private void getprofileid()
-        //{
-          //  this.profileid = Auth.profileid;
-        //}
+    private Response getResponse() {
+        RestAssured.baseURI = prop.getProperty("HOST");
+        RequestSpecification request = RestAssured.
+                given().
+                //param("parameter","auth/authenticate")
+                //header("Accept-Encoding","identity").
+                        header("Authorization", prop.getProperty("Authorization_Header")).
+                        header("Content-Type", prop.getProperty("Content")).
+                        header("User-Agent", prop.getProperty("User-Agent")).
+                        when();
+        Response responseinit = request.post(Resources.geturlauthres());
+        return responseinit;
+
+    }
+
+    private String getProfileid(Response resp) {
+        String responseString = resp.asString();
+        System.out.println(responseString);
+        JsonPath js = new JsonPath(responseString);
+        String profid = js.get("profile_id");
+        System.out.println("ProfileID = " + profid);
+        return profid;
     }
 
 
     @Test
     public void Auth() {
-        RestAssured.baseURI=prop.getProperty("HOST");
+       /* RestAssured.baseURI=prop.getProperty("HOST");
         RequestSpecification request = RestAssured.
                 given().
                 //param("parameter","auth/authenticate")
@@ -44,13 +65,16 @@ public class UserService {
                         header("Content-Type",prop.getProperty("Content")).
                         header("User-Agent",prop.getProperty("User-Agent")).
                         when();
-        Response response = request.post(Resources.geturlauthres());
+        Response response = request.post(Resources.geturlauthres());*/
+       // Response response = init();
         response.then().assertThat().statusCode(200).
-                and().header("Content-Type","application/json;charset=UTF-8").
-                and().body("email",equalTo(Assertions.assertrespemail())).
-                and().body("name",equalTo(Assertions.assertrespname()));
+                and().header("Content-Type", "application/json;charset=UTF-8").
+                and().body("email", equalTo(Assertions.assertrespemail())).
+                and().body("name", equalTo(Assertions.assertrespname())).
+                and().body("profile_id",comparesEqualTo(profileid));
+
         // Extract profile id from response
-        String responseString = response.asString();
+        /*String responseString = response.asString();
         System.out.println(responseString);
         JsonPath js = new JsonPath(responseString);
         profileid = js.get("profile_id");
@@ -58,8 +82,23 @@ public class UserService {
 
         // Extract sessiontoken from response
         token = js.get("token");
-        System.out.println("Token = " + token);
+        System.out.println("Token = " + token);*/
     }
+
+   /* private Response init() {
+        RestAssured.baseURI = prop.getProperty("HOST");
+        RequestSpecification request = RestAssured.
+                given().
+                //param("parameter","auth/authenticate")
+                //header("Accept-Encoding","identity").
+                        header("Authorization", prop.getProperty("Authorization_Header")).
+                        header("Content-Type", prop.getProperty("Content")).
+                        header("User-Agent", prop.getProperty("User-Agent")).
+                        when();
+        Response response = request.post(Resources.geturlauthres());
+        return response;
+    }*/
+
 
     @Test
     public void Authcheck() {
@@ -77,10 +116,11 @@ public class UserService {
                 and().header("Content-Type",equalTo(Assertions.assertrespcontenttype())).
                 and().body("email",equalTo(Assertions.assertrespemail())).
                 and().body("name",equalTo(Assertions.assertrespname())).
-                and().extract().response();
+                and().body("profile_id",comparesEqualTo(profileid)).
+        and().extract().response();
 
         // Extract profile id from response
-        String responseString = response.asString();
+       /* String responseString = response.asString();
         System.out.println(responseString);
         JsonPath js = new JsonPath(responseString);
         profileid = js.get("profile_id");
@@ -88,7 +128,7 @@ public class UserService {
 
         // Extract sessiontoken from response
         token = js.get("token");
-        System.out.println("Token = " + token);
+        System.out.println("Token = " + token);*/
 
     }
 
@@ -99,10 +139,10 @@ public class UserService {
                 given().
                 //param("parameter","auth/authenticate")
                 //header("Accept-Encoding","identity").
-                header("Authorization",prop.getProperty("Authorization_Header")).
-                header("Content-Type", prop.getProperty("Content")).
-                header("User-Agent",prop.getProperty("User-Agent")).
-                when();
+                        header("Authorization",prop.getProperty("Authorization_Header")).
+                        header("Content-Type", prop.getProperty("Content")).
+                        header("User-Agent",prop.getProperty("User-Agent")).
+                        when();
         Response responseone = request.get(Resources.geturlgetprofileres()+ profileid);
         responseone.then().assertThat().statusCode(200).
                 and().header("Content-Type",equalTo(Assertions.assertrespcontenttype())).
@@ -111,12 +151,12 @@ public class UserService {
                 and().body("id", comparesEqualTo(profileid)).
                 and().extract().response();
         String responseStringval = responseone.asString();
-        System.out.println(responseStringval);
-        System.out.println("ProfileID = " + profileid);
+       /* System.out.println(responseStringval);
+        System.out.println("ProfileID = " + profileid);*/
 
     }
 
-   @Test
+    @Test
     public void GetUserMain() {
         RestAssured.baseURI = prop.getProperty("HOST");
         RequestSpecification request = RestAssured.
@@ -134,7 +174,7 @@ public class UserService {
                 and().extract().response();
         String responseStringvalue = responsetwo.asString();
         System.out.println(responseStringvalue);
-       System.out.println("ProfileID = " + profileid);
+        System.out.println("ProfileID = " + profileid);
 
     }
 
@@ -173,7 +213,7 @@ public class UserService {
                         body("{"+
                                 "\"gender\":\"female\","+
                                 "\"yob\":1975"+
-                        "}").
+                                "}").
                         when();
         Response responsetwo = request.put(Resources.geturlputprofileres()+profileid);
         responsetwo.then().assertThat().statusCode(200).
@@ -183,8 +223,8 @@ public class UserService {
                 and().body("year_of_birth",equalTo(1975)).
                 and().extract().response();
         String responseStringvalue = responsetwo.asString();
-        System.out.println(responseStringvalue);
-        System.out.println("ProfileID = " + profileid);
+        //System.out.println(responseStringvalue);
+        //System.out.println("ProfileID = " + profileid);
 
     }
 
@@ -198,21 +238,34 @@ public class UserService {
                         header("Authorization",prop.getProperty("Authorization_Header")).
                         header("Content-Type", prop.getProperty("Content")).
                         header("User-Agent",prop.getProperty("User-Agent")).
-                        body("{"+
-                                "\"year_of_birth\":1997,"+
-                                "\"gender\":male"+
+                        body("{\"gender\":\"male\"," +
+                                "	\"yob\":1970" +
                                 "}").
                         when();
         Response responsetwo = request.put(Resources.geturlputusersmeres());
         System.out.println(responsetwo);
         responsetwo.then().assertThat().statusCode(200).
                 and().header("Content-Type",equalTo(Assertions.assertrespcontenttype())).
-                and().body("id", comparesEqualTo(profileid)).
-                and().body("gender",equalTo("female")).
-                and().body("year_of_birth",equalTo(1975)).
+                and().body("main_profile.id", comparesEqualTo(profileid)).
+                and().body("main_profile.gender",equalTo("male")).
+                and().body("main_profile.year_of_birth",equalTo(1970)).
                 and().extract().response();
         String responseStringvalue = responsetwo.asString();
-        System.out.println(responseStringvalue);
+       // System.out.println(responseStringvalue);
+    }
 
+    @Test
+    public void RemUsersMe() {
+        RestAssured.baseURI = prop.getProperty("HOST");
+        RequestSpecification request = RestAssured.
+                given().
+                //param("parameter","auth/authenticate")
+                //header("Accept-Encoding","identity").
+                        header("Authorization",prop.getProperty("Authorization_Header")).
+                        header("Content-Type", prop.getProperty("Content")).
+                        header("User-Agent",prop.getProperty("User-Agent")).
+                        when();
+        Response responseone = request.delete(Resources.geturlremusersmeres());
+        responseone.then().assertThat().statusCode(204);
     }
 }
